@@ -1,0 +1,267 @@
+// ═══════════════════════════════════════════════════════════════
+// AOLD — Prisma Schema
+// Database: PostgreSQL 16
+// ═══════════════════════════════════════════════════════════════
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ── Enums ─────────────────────────────────────────────────────────
+enum UserPlan {
+  free
+  pro
+  enterprise
+}
+
+enum FileStatus {
+  PENDING
+  PROCESSING
+  READY
+  ERROR
+}
+
+enum FileType {
+  IMAGE
+  VIDEO
+  DOCUMENT
+  OTHER
+}
+
+enum TagSource {
+  AI
+  USER
+}
+
+// ── Users ─────────────────────────────────────────────────────────
+model User {
+  id                 String    @id @default(uuid())
+  email              String    @unique
+  passwordHash       String?   // null for OAuth users
+  fullName           String
+  avatarUrl          String?
+  plan               UserPlan  @default(free)
+  storageUsedBytes   BigInt    @default(0)
+  storageQuotaBytes  BigInt    @default(5368709120) // 5 GB
+  emailVerified      Boolean   @default(false)
+  twoFactorEnabled   Boolean   @default(false)
+  twoFactorSecret    String?   // TOTP secret (encrypted)
+  createdAt          DateTime  @default(now())
+  updatedAt          DateTime  @updatedAt
+
+  // Relations
+  files       File[]
+  folders     Folder[]
+  searchLogs  SearchLog[]
+  insights    InsightItem[]
+  oauthAccounts OAuthAccount[]
+  sessions    UserSession[]
+
+  @@index([email])
+  @@map("users")
+}
+
+model OAuthAccount {
+  id           String   @id @default(uuid())
+  userId       String
+  provider     String   // 'google' | 'github'
+  providerId   String   // external account ID
+  accessToken  String?
+  refreshToken String?
+  expiresAt    DateTime?
+  createdAt    DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerId])
+  @@index([userId])
+  @@map("oauth_accounts")
+}
+
+model UserSession {
+  id           String   @id @default(uuid())
+  userId       String
+  jti          String   @unique  // JWT ID for revocation
+  userAgent    String?
+  ipAddress    String?
+  expiresAt    DateTime
+  createdAt    DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([jti])
+  @@index([expiresAt])
+  @@map("user_sessions")
+}
+
+// ── Folders ───────────────────────────────────────────────────────
+model Folder {
+  id         String    @id @default(uuid())
+  userId     String
+  parentId   String?
+  name       String
+  path       String    // materialized path, e.g. "root/projects/alpha"
+  isSmart    Boolean   @default(false)
+  smartRule  Json?     // SmartFolderRule JSON
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+
+  user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  parent   Folder?  @relation("FolderTree", fields: [parentId], references: [id])
+  children Folder[] @relation("FolderTree")
+  files    File[]
+
+  @@index([userId])
+  @@index([userId, parentId])
+  @@index([path])
+  @@map("folders")
+}
+
+// ── Files ─────────────────────────────────────────────────────────
+model File {
+  id              String     @id @default(uuid())
+  userId          String
+  folderId        String?
+  name            String
+  mimeType        String
+  fileType        FileType
+  sizeBytes       BigInt
+  s3Key           String
+  s3Bucket        String
+  status          FileStatus @default(PENDING)
+  versionChainId  String     // groups all versions of a file
+  versionNumber   Int        @default(1)
+  isLatest        Boolean    @default(true)
+  isDeleted       Boolean    @default(false)
+  deletedAt       DateTime?
+  createdAt       DateTime   @default(now())
+  updatedAt       DateTime   @updatedAt
+
+  // Relations
+  user       User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  folder     Folder?        @relation(fields: [folderId], references: [id], onDelete: SetNull)
+  tags       FileTag[]
+  aiMetadata FileAIMetadata?
+  preview    FilePreview?
+
+  @@index([userId, createdAt(sort: Desc)])
+  @@index([userId, folderId])
+  @@index([versionChainId, isLatest])
+  @@index([userId, isDeleted])
+  @@index([userId, fileType])
+  @@index([status])
+  @@map("files")
+}
+
+// ── File Tags ─────────────────────────────────────────────────────
+model FileTag {
+  id         String    @id @default(uuid())
+  fileId     String
+  tagValue   String    // e.g. 'ai:beach', 'user:important'
+  source     TagSource
+  confidence Float?    // AI confidence 0.0-1.0
+  createdAt  DateTime  @default(now())
+
+  file File @relation(fields: [fileId], references: [id], onDelete: Cascade)
+
+  @@unique([fileId, tagValue])
+  @@index([fileId])
+  @@index([tagValue])
+  @@map("file_tags")
+}
+
+// ── AI Metadata ───────────────────────────────────────────────────
+model FileAIMetadata {
+  fileId               String   @id
+  description          String?  @db.Text
+  summary              String?  @db.Text  // for documents
+  transcript           String?  @db.Text  // for videos
+  ocrText              String?  @db.Text  // for images
+  detectedObjects      Json     @default("[]") // DetectedObject[]
+  detectedScenes       Json     @default("[]") // DetectedScene[]
+  detectedEntities     Json     @default("{}") // DetectedEntities
+  pineconeVectorId     String?
+  processingDurationMs Int?
+  processedAt          DateTime?
+  retryCount           Int      @default(0)
+  lastError            String?
+
+  file File @relation(fields: [fileId], references: [id], onDelete: Cascade)
+
+  @@map("file_ai_metadata")
+}
+
+// ── File Previews ─────────────────────────────────────────────────
+model FilePreview {
+  fileId        String   @id
+  thumbnailS3Key String?  // 200x200 thumbnail
+  previewS3Key   String?  // 800px image / page-1 / 15s video clip
+  cdnBaseUrl     String?
+  generatedAt    DateTime @default(now())
+
+  file File @relation(fields: [fileId], references: [id], onDelete: Cascade)
+
+  @@map("file_previews")
+}
+
+// ── Search Logs ───────────────────────────────────────────────────
+model SearchLog {
+  id               String   @id @default(uuid())
+  userId           String
+  queryText        String
+  resultCount      Int
+  clickedFileIds   String[] // array of clicked file IDs
+  latencyMs        Int
+  fileTypeFilter   String?
+  createdAt        DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, createdAt(sort: Desc)])
+  @@map("search_logs")
+}
+
+// ── Insights ──────────────────────────────────────────────────────
+model InsightItem {
+  id          String   @id @default(uuid())
+  userId      String
+  type        String   // 'reminder' | 'suggestion' | 'group' | 'digest'
+  title       String
+  description String   @db.Text
+  fileIds     String[] // associated file IDs
+  priority    String   @default("medium") // 'low' | 'medium' | 'high'
+  dueDate     DateTime?
+  isRead      Boolean  @default(false)
+  isDismissed Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  expiresAt   DateTime?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, isRead])
+  @@index([userId, createdAt(sort: Desc)])
+  @@map("insight_items")
+}
+
+// ── Audit Log ─────────────────────────────────────────────────────
+model AuditLog {
+  id         String   @id @default(uuid())
+  userId     String
+  action     String   // 'file.upload' | 'file.delete' | 'file.download' | 'search' etc.
+  resourceId String?
+  resourceType String?
+  metadata   Json?
+  ipAddress  String?
+  userAgent  String?
+  createdAt  DateTime @default(now())
+
+  @@index([userId, createdAt(sort: Desc)])
+  @@index([resourceId])
+  @@map("audit_logs")
+}

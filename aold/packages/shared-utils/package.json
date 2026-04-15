@@ -1,0 +1,18 @@
+{
+  "name": "@aold/shared-utils",
+  "version": "1.0.0",
+  "private": true,
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "scripts": {
+    "lint": "eslint src/",
+    "clean": "rm -rf dist"
+  },
+  "dependencies": {
+    "uuid": "^9.0.1",
+    "pino": "^9.1.0"
+  },
+  "devDependencies": {
+    "@types/uuid": "^9.0.8"
+  }
+}
