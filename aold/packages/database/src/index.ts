@@ -1,7 +1,6 @@
 // ═══════════════════════════════════════════════════════════════
 // @aold/database — Prisma client singleton
 // ═══════════════════════════════════════════════════════════════
-
 import { PrismaClient } from '@prisma/client';
 
 // Prevent multiple instances in development (hot reloading)
