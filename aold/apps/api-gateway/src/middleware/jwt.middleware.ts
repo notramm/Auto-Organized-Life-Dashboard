@@ -7,7 +7,7 @@ import { createVerifier } from 'fast-jwt';
 import { config } from '../config';
 import { isJtiBlacklisted } from '../config/redis';
 import { PUBLIC_PATHS } from '../config/services';
-import { generateRequestId } from '@aold/shared-utils';
+const generateRequestId = () => `req_${Date.now()}_${Math.random().toString(36).slice(2, 10)}`;
 
 // Augment Fastify request type
 declare module 'fastify' {

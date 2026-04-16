@@ -13,12 +13,6 @@
     "declaration": true,
     "declarationMap": true,
     "sourceMap": true,
-    "incremental": true,
-    "composite": true,
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
-    "noImplicitReturns": true,
-    "exactOptionalPropertyTypes": true,
     "paths": {
       "@aold/shared-types": ["./packages/shared-types/src/index.ts"],
       "@aold/shared-utils": ["./packages/shared-utils/src/index.ts"],

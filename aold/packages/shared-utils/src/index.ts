@@ -87,7 +87,7 @@ export const errorResponse = (
   details?: unknown,
 ): ApiError => ({
   success: false,
-  error: { code, message, ...(details && { details }) },
+  error: { code, message, ...(details ? { details } : {}) },
   requestId,
 });
 

@@ -3,8 +3,14 @@
 // Add new services here — the proxy plugin reads from this.
 
 import { config } from '../config';
-import { UserPlan } from '@aold/shared-types';
-import { RATE_LIMITS } from '@aold/shared-config';
+import type { UserPlan } from '@aold/shared-types';
+import type { } from '@aold/shared-config';
+
+const RATE_LIMITS = {
+  FREE_REQUESTS_PER_MINUTE: 100,
+  PRO_REQUESTS_PER_MINUTE: 1000,
+  ENTERPRISE_REQUESTS_PER_MINUTE: 10000,
+};
 
 export interface ServiceDefinition {
   url: string;

@@ -1,4 +1,4 @@
-import { FastifyInstance } from 'fastify';
+import { FastifyInstance, FastifyReply } from 'fastify';
 import { ZodError } from 'zod';
 import {
   registerSchema,
@@ -32,7 +32,7 @@ const COOKIE_OPTIONS = {
 export async function authRoutes(app: FastifyInstance) {
 
   // ── Error handler helper ────────────────────────────────────────
-  const handleError = (err: unknown, reply: Parameters<typeof authRoutes>[0]['reply']) => {
+  const handleError = (err: unknown, reply: FastifyReply) => {
     const requestId = generateRequestId();
     if (err instanceof ZodError) {
       return reply.status(400).send(

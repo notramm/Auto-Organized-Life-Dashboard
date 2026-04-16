@@ -1,6 +1,7 @@
 // ── Auth Service — Core Business Logic ───────────────────────────
 import * as argon2 from 'argon2';
-import { prisma } from '@aold/database';
+import { PrismaClient } from '@prisma/client';
+const prisma = new PrismaClient();
 import { UserPlan } from '@aold/shared-types';
 import {
   AppError,
