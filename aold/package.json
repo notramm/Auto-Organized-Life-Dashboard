@@ -20,7 +20,8 @@
     "docker:up": "docker-compose -f infrastructure/docker/docker-compose.yml up -d",
     "docker:down": "docker-compose -f infrastructure/docker/docker-compose.yml down",
     "docker:logs": "docker-compose -f infrastructure/docker/docker-compose.yml logs -f",
-    "clean": "turbo run clean && rm -rf node_modules"
+    "clean": "turbo run clean && rm -rf node_modules",
+    "db:studio": "prisma studio --schema=packages/database/prisma/schema.prisma"
   },
   "devDependencies": {
     "turbo": "^2.0.0",
