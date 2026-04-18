@@ -2,6 +2,9 @@
 
 from pydantic_settings import BaseSettings
 from functools import lru_cache
+from dotenv import load_dotenv
+
+load_dotenv("../../.env")
 
 class Settings(BaseSettings):
     # App
@@ -43,6 +46,7 @@ class Settings(BaseSettings):
 
     class Config:
         env_file = ".env"
+        extra="allow"
 
 @lru_cache()
 def get_settings() -> Settings:

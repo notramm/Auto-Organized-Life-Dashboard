@@ -8,6 +8,7 @@ import { fileRoutes }       from './routes/file.routes';
 import { folderRoutes }     from './routes/folder.routes';
 import { getProducer, disconnectProducer } from './config/kafka';
 import { PrismaClient }     from '@prisma/client';
+import { startConsumer } from './config/consumer';
 
 const prisma = new PrismaClient();
 
@@ -16,6 +17,7 @@ async function start() {
   console.info('[DB] Connected');
 
   await getProducer();
+  await startConsumer();
 
   const app = Fastify({
     logger: process.env.NODE_ENV === 'development'
