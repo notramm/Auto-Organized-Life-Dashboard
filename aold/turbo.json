@@ -1,6 +1,5 @@
 {
   "$schema": "https://turbo.build/schema.json",
-  "globalDependencies": [".env"],
   "tasks": {
     "build": {
       "dependsOn": ["^build"],
@@ -19,14 +18,6 @@
     },
     "clean": {
       "cache": false
-    },
-    "db:migrate": {
-      "cache": false,
-      "outputs": []
-    },
-    "db:seed": {
-      "cache": false,
-      "outputs": []
     }
   }
 }

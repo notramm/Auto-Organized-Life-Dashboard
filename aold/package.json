@@ -2,6 +2,7 @@
   "name": "aold-monorepo",
   "version": "1.0.0",
   "private": true,
+  "packageManager": "npm@10.9.2",
   "description": "Auto-Organized Life Dashboard — AI Personal Data OS",
   "workspaces": [
     "apps/*",
@@ -9,32 +10,35 @@
     "packages/*"
   ],
   "scripts": {
-    "dev":         "turbo run dev --parallel",
-    "build":       "turbo run build",
-    "test":        "turbo run test",
-    "lint":        "turbo run lint",
-    "format":      "prettier --write \"**/*.{ts,tsx,js,json,md}\"",
-    "db:migrate":  "turbo run db:migrate --filter=@aold/database",
-    "db:seed":     "turbo run db:seed --filter=@aold/database",
-    "docker:up":   "docker-compose -f infrastructure/docker/docker-compose.yml up -d",
+    "dev": "turbo run dev",
+    "build": "turbo run build",
+    "test": "turbo run test",
+    "lint": "turbo run lint",
+    "format": "prettier --write \"**/*.{ts,tsx,js,json,md}\"",
+    "db:migrate": "turbo run db:migrate --filter=@aold/database",
+    "db:seed": "turbo run db:seed --filter=@aold/database",
+    "docker:up": "docker-compose -f infrastructure/docker/docker-compose.yml up -d",
     "docker:down": "docker-compose -f infrastructure/docker/docker-compose.yml down",
     "docker:logs": "docker-compose -f infrastructure/docker/docker-compose.yml logs -f",
     "db:studio": "prisma studio --schema=packages/database/prisma/schema.prisma",
-    "clean":       "turbo run clean && rm -rf node_modules"
+    "clean": "turbo run clean && rm -rf node_modules"
   },
   "devDependencies": {
-    "turbo":                          "^2.9.6",
-    "prettier":                       "^3.8.3",
-    "typescript":                     "^5.6.3",
-    "@types/node":                    "^22.15.21",
-    "eslint":                         "^9.29.0",
-    "@typescript-eslint/parser":      "^8.35.0",
+    "@types/node": "^22.15.21",
     "@typescript-eslint/eslint-plugin": "^8.35.0",
-    "ts-node-dev":                    "^2.0.0",
-    "ts-node":                        "^10.9.2"
+    "@typescript-eslint/parser": "^8.35.0",
+    "eslint": "^9.29.0",
+    "prettier": "^3.8.3",
+    "ts-node": "^10.9.2",
+    "ts-node-dev": "^2.0.0",
+    "turbo": "^2.9.6",
+    "typescript": "^5.6.3"
   },
   "engines": {
     "node": ">=20.0.0",
-    "npm":  ">=10.0.0"
+    "npm": ">=10.0.0"
+  },
+  "dependencies": {
+    "dotenv": "^17.4.2"
   }
 }
