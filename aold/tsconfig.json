@@ -1,25 +1,28 @@
 {
   "compilerOptions": {
-    "jsx": "react",
-    "target": "ES2022",
-    "module": "commonjs",
-    "moduleResolution": "bundler",
-    "lib": ["ES2022"],
-    "strict": true,
-    "esModuleInterop": true,
+    "target":                     "ES2022",
+    "module":                     "CommonJS",
+    "moduleResolution":           "Node",
+    "lib":                        ["ES2022"],
+    "strict":                     true,
+    "esModuleInterop":            true,
     "allowSyntheticDefaultImports": true,
-    "skipLibCheck": true,
+    "skipLibCheck":               true,
     "forceConsistentCasingInFileNames": true,
-    "resolveJsonModule": true,
-    "declaration": true,
-    "declarationMap": true,
-    "sourceMap": true,
+    "resolveJsonModule":          true,
+    "declaration":                true,
+    "declarationMap":             true,
+    "sourceMap":                  true,
+    "incremental":                true,
+    "noUnusedLocals":             false,
+    "noUnusedParameters":         false,
+    "noImplicitReturns":          true,
     "paths": {
-      "@aold/shared-types": ["./packages/shared-types/src/index.ts"],
-      "@aold/shared-utils": ["./packages/shared-utils/src/index.ts"],
+      "@aold/shared-types":  ["./packages/shared-types/src/index.ts"],
+      "@aold/shared-utils":  ["./packages/shared-utils/src/index.ts"],
       "@aold/shared-config": ["./packages/shared-config/src/index.ts"],
-      "@aold/database": ["./packages/database/src/index.ts"]
+      "@aold/database":      ["./packages/database/src/index.ts"]
     }
   },
-  "exclude": ["node_modules"]
+  "exclude": ["node_modules", "dist", ".next"]
 }
