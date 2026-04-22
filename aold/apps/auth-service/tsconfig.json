@@ -1,17 +1,17 @@
 {
   "extends": "../../tsconfig.json",
   "compilerOptions": {
-    "ignoreDeprecations": "6.0",
-    "outDir": "./dist",
-    "rootDir": "./src",
-    "baseUrl": ".",
+    "outDir":          "./dist",
+    "rootDir":         "./src",
+    "baseUrl":         ".",
+    "tsBuildInfoFile": "./dist/.tsbuildinfo",
     "paths": {
-      "@aold/shared-types": ["../../packages/shared-types/src/index.ts"],
-      "@aold/shared-utils": ["../../packages/shared-utils/src/index.ts"],
+      "@aold/shared-types":  ["../../packages/shared-types/src/index.ts"],
+      "@aold/shared-utils":  ["../../packages/shared-utils/src/index.ts"],
       "@aold/shared-config": ["../../packages/shared-config/src/index.ts"],
-      "@aold/database": ["../../packages/database/src/index.ts"]
+      "@aold/database":      ["../../packages/database/src/index.ts"]
     }
   },
-  "include": ["src/**/*"],
-  "exclude": ["node_modules", "dist"]
+  "include":  ["src/**/*"],
+  "exclude":  ["node_modules", "dist"]
 }
