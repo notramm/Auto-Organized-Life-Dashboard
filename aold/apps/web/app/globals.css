@@ -1,49 +1,75 @@
 /* apps/web/src/app/globals.css */
-@import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap');
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-* { box-sizing: border-box; }
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=DM+Mono:wght@400;500&family=Syne:wght@600;700;800&display=swap');
 
-body {
-  background: #080C14;
-  color: #CBD5E1;
-  font-family: 'Syne', sans-serif;
-  -webkit-font-smoothing: antialiased;
+:root {
+  /* Fonts */
+  --font-geist:       'DM Sans',  sans-serif;
+  --font-geist-mono:  'DM Mono',  monospace;
+  --font-display:     'Syne',     sans-serif;
+
+  /* Brand */
+  --brand-50:  #f0f4ff;
+  --brand-500: #6470f1;
+  --brand-600: #5558e5;
+  --brand-700: #4544ca;
+
+  /* Surface */
+  --surface-0:   #ffffff;
+  --surface-50:  #f8f9fc;
+  --surface-100: #f0f2f8;
+  --surface-200: #e4e7f0;
+  --surface-800: #1e2438;
+  --surface-900: #111827;
+
+  /* Sidebar */
+  --sidebar-w: 240px;
 }
 
-::-webkit-scrollbar       { width: 4px; height: 4px; }
-::-webkit-scrollbar-track { background: #0D1420; }
-::-webkit-scrollbar-thumb { background: #1C2D47; border-radius: 2px; }
-::-webkit-scrollbar-thumb:hover { background: #F59E0B; }
+* { box-sizing: border-box; }
 
-::selection { background: #F59E0B33; color: #FCD34D; }
-*:focus-visible { outline: 2px solid #F59E0B; outline-offset: 2px; border-radius: 4px; }
+html {
+  font-family: var(--font-geist);
+  -webkit-font-smoothing: antialiased;
+  scroll-behavior: smooth;
+}
 
+body {
+  background: var(--surface-50);
+  color: var(--surface-900);
+  min-height: 100dvh;
+}
+
+/* ── Scrollbar ───────────────────────────────────────────────────── */
+::-webkit-scrollbar        { width: 6px; height: 6px; }
+::-webkit-scrollbar-track  { background: transparent; }
+::-webkit-scrollbar-thumb  { background: var(--surface-200); border-radius: 99px; }
+::-webkit-scrollbar-thumb:hover { background: var(--surface-300); }
+
+/* ── Shimmer skeleton ────────────────────────────────────────────── */
 .skeleton {
-  background: linear-gradient(90deg, #111B2E 25%, #162238 50%, #111B2E 75%);
+  background: linear-gradient(90deg, var(--surface-100) 25%, var(--surface-200) 50%, var(--surface-100) 75%);
   background-size: 200% 100%;
   animation: shimmer 1.5s infinite;
 }
 
-@keyframes shimmer {
-  0%   { background-position: -200% 0; }
-  100% { background-position:  200% 0; }
+/* ── Focus visible ───────────────────────────────────────────────── */
+:focus-visible {
+  outline: 2px solid var(--brand-500);
+  outline-offset: 2px;
+  border-radius: 4px;
 }
 
-@keyframes fadeUp {
-  0%   { opacity: 0; transform: translateY(12px); }
-  100% { opacity: 1; transform: translateY(0); }
-}
+/* ── Utility classes ─────────────────────────────────────────────── */
+.font-display { font-family: var(--font-display); }
 
-@keyframes fadeIn {
-  0%   { opacity: 0; }
-  100% { opacity: 1; }
-}
-
-@keyframes pulseGlow {
-  0%, 100% { box-shadow: 0 0 0px #F59E0B33; }
-  50%       { box-shadow: 0 0 20px #F59E0B66; }
+.glass {
+  background:  rgba(255,255,255,0.7);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255,255,255,0.5);
 }

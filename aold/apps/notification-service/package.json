@@ -10,24 +10,25 @@
     "clean": "rm -rf dist"
   },
   "dependencies": {
-    "fastify": "^5.8.5",
+    "@aold/database": "*",
+    "@aold/shared-config": "*",
+    "@aold/shared-types": "*",
+    "@aold/shared-utils": "*",
+    "@aws-sdk/client-ses": "^3.1035.0",
     "@fastify/cors": "^11.2.0",
     "@fastify/helmet": "^13.0.2",
     "@pinecone-database/pinecone": "^7.2.0",
-    "openai": "^4.100.0",
+    "fastify": "^5.8.5",
     "ioredis": "^5.10.1",
     "kafkajs": "^2.2.4",
-    "zod": "^3.25.64",
+    "openai": "^4.100.0",
     "pino": "^9.7.0",
     "pino-pretty": "^13.0.1",
-    "@aold/shared-types": "*",
-    "@aold/shared-utils": "*",
-    "@aold/shared-config": "*",
-    "@aold/database": "*"
+    "zod": "^3.25.64"
   },
   "devDependencies": {
-    "typescript": "^5.6.3",
     "@types/node": "^22.15.21",
-    "ts-node-dev": "^2.0.0"
+    "ts-node-dev": "^2.0.0",
+    "typescript": "^5.6.3"
   }
 }
