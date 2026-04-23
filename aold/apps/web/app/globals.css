@@ -1,75 +1,127 @@
-/* apps/web/src/app/globals.css */
+/* apps/web/app/globals.css */
+
+@import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=JetBrains+Mono:wght@300;400;500&family=Bricolage+Grotesque:opsz,wght@12..96,300;12..96,400;12..96,500;12..96,600;12..96,700;12..96,800&display=swap');
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=DM+Mono:wght@400;500&family=Syne:wght@600;700;800&display=swap');
-
+/* ── CSS Variables ─────────────────────────────────────────────── */
 :root {
-  /* Fonts */
-  --font-geist:       'DM Sans',  sans-serif;
-  --font-geist-mono:  'DM Mono',  monospace;
-  --font-display:     'Syne',     sans-serif;
-
-  /* Brand */
-  --brand-50:  #f0f4ff;
-  --brand-500: #6470f1;
-  --brand-600: #5558e5;
-  --brand-700: #4544ca;
-
-  /* Surface */
-  --surface-0:   #ffffff;
-  --surface-50:  #f8f9fc;
-  --surface-100: #f0f2f8;
-  --surface-200: #e4e7f0;
-  --surface-800: #1e2438;
-  --surface-900: #111827;
-
-  /* Sidebar */
-  --sidebar-w: 240px;
+  --font-sans:    'Bricolage Grotesque', sans-serif;
+  --font-mono:    'JetBrains Mono', monospace;
+  --font-display: 'Syne', sans-serif;
 }
 
-* { box-sizing: border-box; }
+/* ── Base ──────────────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; }
 
 html {
-  font-family: var(--font-geist);
-  -webkit-font-smoothing: antialiased;
   scroll-behavior: smooth;
+  -webkit-font-smoothing:  antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
 }
 
 body {
-  background: var(--surface-50);
-  color: var(--surface-900);
-  min-height: 100dvh;
+  font-family:     var(--font-sans);
+  background:      #080C14;
+  color:           #CBD5E1;
+  min-height:      100dvh;
+  overflow-x:      hidden;
 }
 
-/* ── Scrollbar ───────────────────────────────────────────────────── */
-::-webkit-scrollbar        { width: 6px; height: 6px; }
-::-webkit-scrollbar-track  { background: transparent; }
-::-webkit-scrollbar-thumb  { background: var(--surface-200); border-radius: 99px; }
-::-webkit-scrollbar-thumb:hover { background: var(--surface-300); }
-
-/* ── Shimmer skeleton ────────────────────────────────────────────── */
-.skeleton {
-  background: linear-gradient(90deg, var(--surface-100) 25%, var(--surface-200) 50%, var(--surface-100) 75%);
-  background-size: 200% 100%;
-  animation: shimmer 1.5s infinite;
+/* ── Selection ─────────────────────────────────────────────────── */
+::selection {
+  background: rgba(245, 158, 11, 0.25);
+  color:      #FCD34D;
 }
 
-/* ── Focus visible ───────────────────────────────────────────────── */
+/* ── Focus ─────────────────────────────────────────────────────── */
 :focus-visible {
-  outline: 2px solid var(--brand-500);
-  outline-offset: 2px;
-  border-radius: 4px;
+  outline:        2px solid rgba(245, 158, 11, 0.8);
+  outline-offset: 3px;
+  border-radius:  6px;
 }
 
-/* ── Utility classes ─────────────────────────────────────────────── */
-.font-display { font-family: var(--font-display); }
+/* ── Scrollbar ─────────────────────────────────────────────────── */
+::-webkit-scrollbar        { width: 4px; height: 4px; }
+::-webkit-scrollbar-track  { background: #0A0F1A; }
+::-webkit-scrollbar-thumb  { background: #243659; border-radius: 99px; }
+::-webkit-scrollbar-thumb:hover { background: #F59E0B; }
 
+/* ── Skeleton ──────────────────────────────────────────────────── */
+.skeleton {
+  background:      linear-gradient(90deg, #0D1420 25%, #162238 50%, #0D1420 75%);
+  background-size: 400% 100%;
+  animation:       shimmer 2s linear infinite;
+}
+
+/* ── Glass morphism ────────────────────────────────────────────── */
 .glass {
-  background:  rgba(255,255,255,0.7);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(255,255,255,0.5);
+  background:           rgba(13, 20, 32, 0.7);
+  backdrop-filter:      blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border:               1px solid rgba(255, 255, 255, 0.06);
+}
+
+.glass-amber {
+  background:           rgba(245, 158, 11, 0.05);
+  backdrop-filter:      blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border:               1px solid rgba(245, 158, 11, 0.15);
+}
+
+/* ── Noise overlay ─────────────────────────────────────────────── */
+.noise::after {
+  content:        '';
+  position:       fixed;
+  inset:          0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index:        9999;
+}
+
+/* ── Glow effects ──────────────────────────────────────────────── */
+.glow-amber { box-shadow: 0 0 32px rgba(245,158,11,0.25), 0 0 8px rgba(245,158,11,0.15); }
+.glow-emerald { box-shadow: 0 0 24px rgba(16,185,129,0.2); }
+.text-glow-amber { text-shadow: 0 0 20px rgba(245,158,11,0.5); }
+
+/* ── Gradient text ─────────────────────────────────────────────── */
+.text-gradient-amber {
+  background: linear-gradient(135deg, #FCD34D 0%, #F59E0B 50%, #B45309 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ── Card hover effect ─────────────────────────────────────────── */
+.card-hover {
+  transition: transform 0.2s cubic-bezier(0.22,1,0.36,1), box-shadow 0.2s ease;
+}
+.card-hover:hover {
+  transform:   translateY(-2px);
+  box-shadow:  0 16px 48px rgba(0,0,0,0.5), 0 1px 0 rgba(255,255,255,0.06) inset;
+}
+
+/* ── Dot grid background ───────────────────────────────────────── */
+.bg-dots {
+  background-image: radial-gradient(rgba(255,255,255,0.06) 1px, transparent 1px);
+  background-size: 24px 24px;
+}
+
+/* ── Animated border ───────────────────────────────────────────── */
+@property --angle {
+  syntax: '<angle>';
+  initial-value: 0deg;
+  inherits: false;
+}
+
+@keyframes spin-border {
+  to { --angle: 360deg; }
+}
+
+.border-animated {
+  background: conic-gradient(from var(--angle), transparent 70%, rgba(245,158,11,0.6) 100%);
+  animation: spin-border 3s linear infinite;
 }

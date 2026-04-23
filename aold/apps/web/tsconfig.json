@@ -19,7 +19,6 @@
     "plugins":                         [{ "name": "next" }],
     "baseUrl":                         ".",
     "paths": {
-      "@/*":                ["./src/*"],
       "@aold/shared-types": ["../../packages/shared-types/src/index.ts"]
     }
   },
