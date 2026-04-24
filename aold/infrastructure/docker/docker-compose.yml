@@ -1,5 +1,3 @@
-version: '3.9'
-
 # ═══════════════════════════════════════════════════════════════
 # AOLD — Local Development Infrastructure
 # Run: npm run docker:up
@@ -109,10 +107,10 @@ services:
       - aold-network
     healthcheck:
       test: ["CMD-SHELL", "kafka-topics --bootstrap-server localhost:9092 --list"]
-      interval: 15s
-      timeout: 10s
-      retries: 10
-      start_period: 30s
+      interval: 20s       # ← 15s se 20s
+      timeout:  15s       # ← 10s se 15s
+      retries:  15        # ← 10 se 15
+      start_period: 60s   # ← 30s se 60s
 
   # ── Kafka UI (Dev only) ──────────────────────────────────────────
   kafka-ui:

@@ -24,41 +24,25 @@ const INTERNAL_HEADERS = [
 
 export async function registerProxies(app: FastifyInstance) {
   for (const service of services) {
-    log.info(`Registering proxy: ${service.prefix} → ${service.url}`);
+    log.info(`Registering proxy: ${service.prefix} → ${service.url}${service.rewritePrefix}`);
 
     await app.register(httpProxy, {
-      upstream: service.url,
-      prefix: service.prefix,
-      rewritePrefix: service.prefix,
-
-      // Modify request before forwarding
+      upstream:      service.url,
+      prefix:        service.prefix,
+      rewritePrefix: service.rewritePrefix,  // ← YAHAN USE KARO
       replyOptions: {
         rewriteRequestHeaders: (request, headers) => {
-          // 1. Strip any spoofed internal headers from client
-          for (const h of INTERNAL_HEADERS) {
-            delete headers[h];
-          }
-
-          // 2. Inject verified user context from JWT middleware
+          for (const h of INTERNAL_HEADERS) { delete headers[h]; }
           if (request.userId) {
-            headers['x-user-id'] = request.userId;
+            headers['x-user-id']    = request.userId;
             headers['x-user-email'] = request.userEmail ?? '';
-            headers['x-user-plan'] = request.userPlan ?? 'free';
+            headers['x-user-plan']  = request.userPlan  ?? 'free';
           }
-
-          // 3. Always inject request ID for distributed tracing
-          headers['x-request-id'] = request.requestId;
-
-          // 4. Inject shared internal secret so services know
-          //    the request came through the gateway (not directly)
-          headers['x-gateway-secret'] =
-            process.env.GATEWAY_INTERNAL_SECRET ?? 'dev-gateway-secret';
-
+          headers['x-request-id']     = request.requestId;
+          headers['x-gateway-secret'] = process.env.GATEWAY_INTERNAL_SECRET ?? 'dev-gateway-secret';
           return headers;
         },
       },
-
-      // Handle upstream errors gracefully
       httpMethods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'HEAD', 'OPTIONS'],
     });
   }

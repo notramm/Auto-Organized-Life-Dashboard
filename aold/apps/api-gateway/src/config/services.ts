@@ -3,7 +3,7 @@
 // Add new services here — the proxy plugin reads from this.
 
 import { config } from '../config';
-import type { UserPlan } from '@aold/shared-types';
+import { UserPlan } from '@aold/shared-types';
 import type { } from '@aold/shared-config';
 
 const RATE_LIMITS = {
@@ -15,46 +15,53 @@ const RATE_LIMITS = {
 export interface ServiceDefinition {
   url: string;
   prefix: string;       // path prefix this service handles
+  rewritePrefix: string;   
   requiresAuth: boolean;
   description: string;
 }
 
 export const services: ServiceDefinition[] = [
   {
-    url: config.AUTH_SERVICE_URL,
-    prefix: '/api/auth',
-    requiresAuth: false, // auth routes handle their own auth
-    description: 'Authentication & user management',
+    url:          config.AUTH_SERVICE_URL,
+    prefix:       '/api/auth',
+    rewritePrefix: '/auth',        // ← YEH ADD KARO
+    requiresAuth: false,
+    description:  'Authentication & user management',
   },
   {
-    url: config.FILE_SERVICE_URL,
-    prefix: '/api/files',
+    url:          config.FILE_SERVICE_URL,
+    prefix:       '/api/files',
+    rewritePrefix: '/files',       // ← YEH ADD KARO
     requiresAuth: true,
-    description: 'File upload, storage, folders, tags',
+    description:  'File upload, storage, folders, tags',
   },
   {
-    url: config.FILE_SERVICE_URL,
-    prefix: '/api/folders',
+    url:          config.FILE_SERVICE_URL,
+    prefix:       '/api/folders',
+    rewritePrefix: '/folders',     // ← YEH ADD KARO
     requiresAuth: true,
-    description: 'Folder management',
+    description:  'Folder management',
   },
   {
-    url: config.SEARCH_SERVICE_URL,
-    prefix: '/api/search',
+    url:          config.SEARCH_SERVICE_URL,
+    prefix:       '/api/search',
+    rewritePrefix: '/search',      // ← YEH ADD KARO
     requiresAuth: true,
-    description: 'Semantic search',
+    description:  'Semantic search',
   },
   {
-    url: config.INSIGHTS_SERVICE_URL,
-    prefix: '/api/insights',
+    url:          config.INSIGHTS_SERVICE_URL,
+    prefix:       '/api/insights',
+    rewritePrefix: '/insights',    // ← YEH ADD KARO
     requiresAuth: true,
-    description: 'AI insights and reminders',
+    description:  'AI insights and reminders',
   },
   {
-    url: config.NOTIFICATION_SERVICE_URL,
-    prefix: '/api/notifications',
+    url:          config.NOTIFICATION_SERVICE_URL,
+    prefix:       '/api/notifications',
+    rewritePrefix: '/notifications', // ← YEH ADD KARO
     requiresAuth: true,
-    description: 'Notification preferences',
+    description:  'Notification preferences',
   },
 ];
 

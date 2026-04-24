@@ -39,6 +39,15 @@ const ARGON2_OPTIONS: argon2.Options = {
   parallelism: 4,
 };
 
+// BigInt → Number (PostgreSQL numeric fields)
+function sanitizeUser<T extends object>(user: T): T {
+  return JSON.parse(
+    JSON.stringify(user, (_key, value) =>
+      typeof value === 'bigint' ? Number(value) : value
+    )
+  );
+}
+
 // ── Register ──────────────────────────────────────────────────────
 export async function register(input: RegisterInput) {
   // Check duplicate email
@@ -80,7 +89,7 @@ export async function register(input: RegisterInput) {
   // Issue tokens
   const tokens = await issueTokenPair(user.id, user.email, user.plan as UserPlan);
 
-  return { user, tokens };
+  return { user: sanitizeUser(user), tokens };
 }
 
 // ── Login ─────────────────────────────────────────────────────────
@@ -132,7 +141,7 @@ export async function login(input: LoginInput, ipAddress: string) {
   const tokens = await issueTokenPair(user.id, user.email, user.plan as UserPlan);
   const { passwordHash: _, ...safeUser } = user;
 
-  return { user: safeUser, tokens };
+  return { user: sanitizeUser(safeUser), tokens };
 }
 
 // ── Refresh ───────────────────────────────────────────────────────
@@ -177,7 +186,7 @@ export async function refreshTokens(refreshToken: string) {
   const tokens = await issueTokenPair(user.id, user.email, user.plan as UserPlan);
   log.info({ userId: user.id }, 'Tokens refreshed');
 
-  return { user, tokens };
+  return { user: sanitizeUser(user), tokens };
 }
 
 // ── Logout ────────────────────────────────────────────────────────
@@ -210,7 +219,7 @@ export async function getMe(userId: string) {
     },
   });
   if (!user) throw new NotFoundError('User');
-  return user;
+  return {user: sanitizeUser(user)};
 }
 
 // ── OAuth upsert (Google) ─────────────────────────────────────────
@@ -285,7 +294,7 @@ export async function upsertOAuthUser(profile: {
   const tokens = await issueTokenPair(user.id, user.email, user.plan as UserPlan);
   log.info({ userId, provider: profile.provider }, 'OAuth login');
 
-  return { user, tokens };
+  return { user: sanitizeUser(user), tokens };
 }
 
 // ── Internal: issue access + refresh pair ─────────────────────────
