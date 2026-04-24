@@ -1,27 +1,20 @@
-// ── Request Logger ────────────────────────────────────────────────
-// Logs every request with timing, user context, and upstream info.
-// Used for debugging, auditing, and observability.
+// apps/web — nahi, yeh gateway mein hai
+// apps/api-gateway/src/middleware/logger.middleware.ts
 
 import { FastifyRequest, FastifyReply } from 'fastify';
 
-export function requestLogger(request: FastifyRequest, _reply: FastifyReply, done: () => void) {
-  const start = Date.now();
-
-  // Log on response complete
-  request.raw.on('close', () => {
-    const duration = Date.now() - start;
-    request.log.info({
-      method: request.method,
-      url: request.url,
-      statusCode: request.raw.statusCode,
-      durationMs: duration,
-      userId: request.userId ?? 'anonymous',
-      userPlan: request.userPlan ?? 'none',
-      requestId: request.requestId,
-      ip: request.ip,
-      userAgent: request.headers['user-agent'],
-    });
+export function requestLogger(
+  request: FastifyRequest,
+  _reply:  FastifyReply,
+  done:    () => void,
+) {
+  done(); // Fastify 5 mein onRequest hook mein done() call karo
+  // Logging request.raw pe depend mat karo
+  request.log.info({
+    method:    request.method,
+    url:       request.url,
+    userId:    request.userId ?? 'anonymous',
+    requestId: request.requestId ?? 'none',
+    ip:        request.ip ?? 'unknown',
   });
-
-  done();
 }

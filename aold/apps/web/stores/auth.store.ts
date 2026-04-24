@@ -1,16 +1,16 @@
-// apps/web/src/stores/auth.store.ts
+// apps/web/stores/auth.store.ts
 
 import { create } from 'zustand';
 import { api, setAccessToken } from '../lib/api';
 
 interface User {
-  id:                 string;
-  email:              string;
-  fullName:           string;
-  avatarUrl?:         string;
-  plan:               string;
-  storageUsedBytes:   number;
-  storageQuotaBytes:  number;
+  id:                string;
+  email:             string;
+  fullName:          string;
+  avatarUrl?:        string;
+  plan:              string;
+  storageUsedBytes:  number;
+  storageQuotaBytes: number;
 }
 
 interface AuthStore {
@@ -31,10 +31,9 @@ export const useAuthStore = create<AuthStore>((set) => ({
 
   loadUser: async () => {
     try {
-      // Try refresh first (restores session on page reload)
-      const { data: refreshData } = await api.post('/auth/refresh');
+      const { data: refreshData } = await api.post('/api/auth/refresh');
       setAccessToken(refreshData.data.accessToken);
-      const { data } = await api.get('/auth/me');
+      const { data } = await api.get('/api/auth/me');
       set({ user: data.data, initialized: true });
     } catch {
       set({ user: null, initialized: true });
@@ -44,9 +43,9 @@ export const useAuthStore = create<AuthStore>((set) => ({
   login: async (email, password) => {
     set({ loading: true });
     try {
-      const { data } = await api.post('/auth/login', { email, password });
+      const { data } = await api.post('/api/auth/login', { email, password });
       setAccessToken(data.data.accessToken);
-      const { data: me } = await api.get('/auth/me');
+      const { data: me } = await api.get('/api/auth/me');
       set({ user: me.data, loading: false });
     } catch (err) {
       set({ loading: false });
@@ -57,9 +56,9 @@ export const useAuthStore = create<AuthStore>((set) => ({
   register: async (email, password, fullName) => {
     set({ loading: true });
     try {
-      const { data } = await api.post('/auth/register', { email, password, fullName });
+      const { data } = await api.post('/api/auth/register', { email, password, fullName });
       setAccessToken(data.data.accessToken);
-      const { data: me } = await api.get('/auth/me');
+      const { data: me } = await api.get('/api/auth/me');
       set({ user: me.data, loading: false });
     } catch (err) {
       set({ loading: false });
@@ -68,7 +67,7 @@ export const useAuthStore = create<AuthStore>((set) => ({
   },
 
   logout: async () => {
-    try { await api.post('/auth/logout'); } catch { /* ignore */ }
+    try { await api.post('/api/auth/logout'); } catch { /* ignore */ }
     setAccessToken(null);
     set({ user: null });
     window.location.href = '/login';
