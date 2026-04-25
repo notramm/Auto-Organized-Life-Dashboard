@@ -10,6 +10,8 @@ build/
 out/
 *.tsbuildinfo
 
+Start.md
+
 # Environment
 .env
 .env.local
