@@ -52,7 +52,7 @@ async function buildApp() {
   await app.register(fastifyCors, {
     origin: (origin, cb) => {
       // Allow requests from frontend and same-origin
-      const allowed = [config.FRONTEND_URL, 'http://localhost:3002'];
+      const allowed = ['http://localhost:3006', 'http://localhost:3002', config.FRONTEND_URL];
       if (!origin || allowed.includes(origin)) {
         cb(null, true);
       } else {

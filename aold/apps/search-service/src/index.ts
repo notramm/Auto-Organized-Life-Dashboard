@@ -1,5 +1,4 @@
 // apps/search-service/src/index.ts
-
 import Fastify       from 'fastify';
 import fastifyCors   from '@fastify/cors';
 import fastifyHelmet from '@fastify/helmet';
@@ -36,16 +35,14 @@ async function start() {
   console.info(`[Search Service] http://${config.HOST}:${config.PORT}`);
 
   const shutdown = async (sig: string) => {
-    console.info(`[Search] ${sig}`);
     await app.close();
     await prisma.$disconnect();
     await redis.quit();
     await disconnectProducer();
     process.exit(0);
   };
-
   process.on('SIGTERM', () => void shutdown('SIGTERM'));
   process.on('SIGINT',  () => void shutdown('SIGINT'));
 }
 
-start().catch((err) => { console.error('[Search] Startup failed:', err); process.exit(1); });
+start().catch((err) => { console.error('[Search] Failed:', err); process.exit(1); });
