@@ -49,21 +49,26 @@ async function buildApp() {
   });
 
   // ── CORS ────────────────────────────────────────────────────
-  await app.register(fastifyCors, {
-    origin: (origin, cb) => {
-      // Allow requests from frontend and same-origin
-      const allowed = ['http://localhost:3006', 'http://localhost:3002', config.FRONTEND_URL];
-      if (!origin || allowed.includes(origin)) {
-        cb(null, true);
-      } else {
-        cb(new Error('Not allowed by CORS'), false);
-      }
-    },
-    credentials: true,
-    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization', 'X-Request-ID'],
-    exposedHeaders: ['X-Request-ID', 'X-RateLimit-Limit', 'X-RateLimit-Remaining'],
-  });
+await app.register(fastifyCors, {
+  origin: (origin, cb) => {
+    const allowed = [
+      'http://localhost:3006',
+      'http://localhost:3002',
+      'http://127.0.0.1:3006',
+    ];
+    // Allow requests with no origin (curl, Postman, server-to-server)
+    if (!origin || allowed.includes(origin)) {
+      cb(null, true);
+    } else {
+      cb(new Error('Not allowed by CORS'), false);
+    }
+  },
+  credentials:    true,
+  methods:        ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Request-ID'],
+  exposedHeaders: ['X-Request-ID', 'X-RateLimit-Limit', 'X-RateLimit-Remaining'],
+  preflight:      true,
+});
 
   // ── Cookies ─────────────────────────────────────────────────
   await app.register(fastifyCookie, {
